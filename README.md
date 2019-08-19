@@ -133,7 +133,7 @@ Running migrations:
 
 ## 3. Django Query Methods
 
-> Django ORM을 활용하게 되면, 파이썬 객체 조작을 ㅗ데이터베이스 조작이 가능하다.
+> Django ORM을 활용하게 되면, 파이썬 객체 조작으로 데이터베이스 조작이 가능하다.
 >
 > ORM(Object-Relational-Mapping)에서는 주로 활용되는 쿼리문들이 모두 method로 구성되어있다.
 
