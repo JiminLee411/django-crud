@@ -175,7 +175,7 @@ article.content = '1번내용'
 article.save()
 
 # 2. create 메서드 활용
-article = Article.objects.creat(title='글', content='내용')
+article = Article.objects.create(title='글', content='내용')
 ```
 
 - 데이터베이스에 저장되면, `id` 값이 자동으로 부여된다. `.save()` 호출하기 전에는 `None` 이다.
