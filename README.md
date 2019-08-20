@@ -129,7 +129,13 @@ Running migrations:
 
   - 데이터베이스에 테이블을 만들 대, 기본;적으로 `app이름_model이름` 으로 생성된다.
 
+* 처음 마이그레이션 파일을 반영했을시, user설정을 해줘야 한다.
 
+  ```bash
+  $ python manage.py createsuperuser
+  ```
+
+  
 
 ## 3. Django Query Methods
 
