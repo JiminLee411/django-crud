@@ -9,4 +9,5 @@
   <h5>작성일자 : {{ article.created_at }}</h5>
   <h5>수정일자 : {{ article.updated_at }}</h5>
   <a href="/articles/">목록으로</a>
+  <a href="/articles/{{ article.pk }}/delete/">[__X__]</a>
 {% endblock %}
