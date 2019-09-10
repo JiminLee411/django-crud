@@ -6,7 +6,7 @@
   </ol>
 </nav>
 
-<form action="/articles/create/">
+<form action="{% url 'articles:create' %}">
   <div class="form-group">
     <label for="title">Title</label>
     <input type="text" class="form-control" id="title" name="title" aria-describedby="emailHelp" placeholder="제목 작성하기">
