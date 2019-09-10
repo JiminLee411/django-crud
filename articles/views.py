@@ -15,8 +15,8 @@ def new(request):
 
 def create(request):
     # 저장 로직
-    title = request.GET.get('title')
-    content = request.GET.get('content')
+    title = request.POST.get('title')
+    content = request.POST.get('content')
     article = Article(title=title, content=content)
     article.save()
 
@@ -46,8 +46,8 @@ def edit(request, article_pk):
     return render(request, 'articles/edit.html', context)
 
 def update(request, article_pk):
-    title = request.GET.get('title')
-    content = request.GET.get('content')
+    title = request.POST.get('title')
+    content = request.POST.get('content')
     article = Article.objects.get(pk=article_pk)
     article.title = title
     article.content = content
