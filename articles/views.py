@@ -91,3 +91,8 @@ def comment_create(request, article_pk):
     else:
         return redirect('articles:detail', article.pk)
 
+def comment_delete(request, article_pk, comment_pk):
+    if request.method == 'POST':
+        comment = Comment.objects.get(pk=comment_pk)
+        comment.delete()
+        return redirect('articles:detail', article_pk)
