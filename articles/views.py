@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 # from IPython import embed
 
-from .models import Article
+from .models import Article, Comment
 from django.views.decorators.http import require_POST # POST여야만 동작할 수 있다
 
 # Create your views here.
@@ -35,8 +35,10 @@ def create(request):
 
 def detail(request, article_pk):
     article = Article.objects.get(pk=article_pk)
+    comments = article.comment_set.all()
     context = {
-        'article': article
+        'article': article,
+        'comments': comments,
     }
     return render(request, 'articles/detail.html', context)
 
@@ -75,3 +77,17 @@ def update(request, article_pk):
             'article': article
         }
         return render(request, 'articles/edit.html', context)
+
+def comment_create(request, article_pk):
+    if request.method == 'POST':
+        article = Article.objects.get(pk=article_pk)
+        content = request.POST.get('content')
+        comment = Comment()
+        comment.content = content
+        comment.article_id = article_pk
+        comment.save()
+        return redirect('articles:detail', article.pk)
+
+    else:
+        return redirect('articles:detail', article.pk)
+
