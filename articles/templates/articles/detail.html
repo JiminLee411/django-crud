@@ -13,8 +13,6 @@
   <h6 class="text-right text-secondary ml-auto inline">작성일자 : {{ article.created_at }}</h6>
   <h6 class="text-right text-secondary">수정일자 : {{ article.updated_at }}</h6>
   
-  
-  
   <hr>
   <form action="{% url 'articles:delete' article.pk %}" method="POST" onclick="return confirm('REALLY DELETE?')">
     {% csrf_token %}
