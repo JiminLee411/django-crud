@@ -32,10 +32,13 @@ def create(request):
         # 검증
         if article_form.is_valid():
             # 검증에 성공하면 저장
-            title = article_form.cleaned_data.get('title')
-            content = article_form.cleaned_data.get('content')
-            article = Article(title=title, content=content)
-            article.save()
+            # title = article_form.cleaned_data.get('title')
+            # content = article_form.cleaned_data.get('content')
+            # article = Article(title=title, content=content)
+            # article.save()
+
+            # meta 클래스 적용후, 이것만 있으면 OK!
+            article = article_form.save()
             return redirect('articles:detail', article.pk)
         # else:
             # 다시 폼으로 돌아가 -> 중복돼서 제거! (아래에 context를 내보내고 else하나로 설정)
@@ -82,19 +85,15 @@ def edit(request, article_pk):
 def update(request, article_pk):
     article = Article.objects.get(pk=article_pk)
     if request.method == 'POST':
-        article_form = ArticleForm(request.POST)
+        article_form = ArticleForm(request.POST, instance=article)
         if article_form.is_valid():
-            article.title = article_form.cleaned_data.get('title')
-            article.content = article_form.cleaned_data.get('content')
-            article.save()
+            article = article_form.save()
+            # article.title = article_form.cleaned_data.get('title')
+            # article.content = article_form.cleaned_data.get('content')
+            # article.save()
             return redirect('articles:detail', article.pk)
     else:
-        article_form = ArticleForm(
-            initial={
-                'title': article.title,
-                'content': article.content
-                }
-        )
+        article_form = ArticleForm(instance=article)
 
     context = {
         'article_form': article_form
