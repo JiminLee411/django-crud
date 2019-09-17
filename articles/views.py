@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-# from IPython import embed
-
+from IPython import embed
 from .models import Article, Comment
+from .forms import ArticleForm
 from django.views.decorators.http import require_POST # POST여야만 동작할 수 있다
 from django.contrib import messages
 
@@ -26,14 +26,28 @@ def index(request):
 
 def create(request):
     if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-        article = Article(title=title, content=content)
-        article.save()
+        # POST 요청 -> 검증 및 저장
+        article_form = ArticleForm(request.POST)
         # embed()
-        return redirect('articles:detail', article.pk)
+        # 검증
+        if article_form.is_valid():
+            # 검증에 성공하면 저장
+            title = article_form.cleaned_data.get('title')
+            content = article_form.cleaned_data.get('content')
+            article = Article(title=title, content=content)
+            article.save()
+            return redirect('articles:detail', article.pk)
+        # else:
+            # 다시 폼으로 돌아가 -> 중복돼서 제거! (아래에 context를 내보내고 else하나로 설정)
     else:
-        return render(request, 'articles/new.html')
+        # GET 요청 -> Form
+        article_form = ArticleForm() # 지금 채워져 있어 -> 검증 실패후 채워져 있는 상태 -> 비워줘
+        # GET : 비어있는 Form context
+        # POST : 검증 실패시 에러메세지와 입력값 채워진 Form context
+    context = {
+        'article_form': article_form
+    }
+    return render(request, 'articles/form.html', context)
 
 def detail(request, article_pk):
     article = Article.objects.get(pk=article_pk)
@@ -68,17 +82,24 @@ def edit(request, article_pk):
 def update(request, article_pk):
     article = Article.objects.get(pk=article_pk)
     if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-        article.title = title
-        article.content = content
-        article.save()
-        return redirect('articles:detail', article.pk)
+        article_form = ArticleForm(request.POST)
+        if article_form.is_valid():
+            article.title = article_form.cleaned_data.get('title')
+            article.content = article_form.cleaned_data.get('content')
+            article.save()
+            return redirect('articles:detail', article.pk)
     else:
-        context = {
-            'article': article
-        }
-        return render(request, 'articles/edit.html', context)
+        article_form = ArticleForm(
+            initial={
+                'title': article.title,
+                'content': article.content
+                }
+        )
+
+    context = {
+        'article_form': article_form
+    }
+    return render(request, 'articles/form.html', context)
 
 def comment_create(request, article_pk):
     if request.method == 'POST':
