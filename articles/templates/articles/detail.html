@@ -9,6 +9,7 @@
     {% comment %} <a href="{% url 'articles:delete' article.pk %}" class="text-right ml-auto">[글 삭제하기]</a> {% endcomment %}
   </p>
   <div><p>{{ article.content }}</p></div>
+  <div><img src="{{ article.image.url }}" alt=""></div>
   <br>
   
   <h6 class="text-right text-secondary ml-auto inline">작성일자 : {{ article.created_at }}</h6>

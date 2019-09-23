@@ -19,6 +19,10 @@ class ArticleForm(forms.ModelForm):
             }
         )
     )
+    image = forms.ImageField(
+        label='이미지'
+    )
+
     class Meta:
         model = Article # Article 쓰려면 import해야해!!!
         fields = '__all__'

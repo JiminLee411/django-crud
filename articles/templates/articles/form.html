@@ -15,7 +15,7 @@
 
 {# Display a form #}
 
-<form action="" method="POST" class="form">
+<form action="" method="POST" class="form" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form article_form %}
     {% buttons %}
