@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from IPython import embed
 from .models import Article, Comment
-from .forms import ArticleForm
+from .forms import ArticleForm, CommentForm
 from django.views.decorators.http import require_POST # POST여야만 동작할 수 있다
 from django.contrib import messages
 
@@ -100,19 +100,23 @@ def update(request, article_pk):
     }
     return render(request, 'articles/form.html', context)
 
+@require_POST
 def comment_create(request, article_pk):
-    if request.method == 'POST':
-        article = Article.objects.get(pk=article_pk)
-        content = request.POST.get('content')
-        comment = Comment()
-        comment.content = content
-        comment.article_id = article_pk
+    article = get_object_or_404(Article, pk=article_pk)
+    # 1. modelform에 사용자 입력값 넣고
+    comment_form = CommentForm(request.POST)
+    # 2. 검증하고,
+    if comment_form.is_valid:
+        comment = comment_form.save(commit=False)
+        comment.article = article
         comment.save()
-        return redirect('articles:detail', article.pk)
 
     else:
-        return redirect('articles:detail', article.pk)
+        messages.success(request, '댓글이 형식에 맞지 않습니다.')
+        
+    return redirect('articles:detail', article.pk)
 
+@require_POST
 def comment_delete(request, article_pk, comment_pk):
     if request.method == 'POST':
         comment = Comment.objects.get(pk=comment_pk)

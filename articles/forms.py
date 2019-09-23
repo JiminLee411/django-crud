@@ -1,5 +1,5 @@
 from django import forms
-from .models import Article
+from .models import Article, Comment
 class ArticleForm(forms.ModelForm):
     title = forms.CharField(
         max_length=140,
@@ -30,6 +30,20 @@ class ArticleForm(forms.ModelForm):
     # 여기에 꾸미려면!
     # 1. 아래 주석(title부터!)을 그대로 class Meta위에 작성해!
     # 2. class Meta안에 widgets = {}설정!
+
+class CommentForm(forms.ModelForm):
+    content = forms.CharField(
+        max_length=140,
+        label='댓글',
+        widget=forms.Textarea(
+            attrs={
+                'placeholder': '댓글을 입력하세요.'
+            }
+        )
+    )
+    class Meta:
+        model = Comment
+        exclude = ('article', )
 
 # # class ArticleForm(forms.Form):
 #     title = forms.CharField(
