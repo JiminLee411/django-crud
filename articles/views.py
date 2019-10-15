@@ -15,6 +15,7 @@ def index(request):
     # print(request.get_host())
     # --------------------------------------------- #
     articles = Article.objects.order_by('-id')
+    # embed()
     context = {
         'articles' : articles
     }
@@ -104,12 +105,12 @@ def update(request, article_pk):
 def comment_create(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
     # 1. modelform에 사용자 입력값 넣고
-    comment_form = CommentForm(request.POST)
+    comment_form = CommentForm(request.POST) # 사용자가 form + modelform
     # 2. 검증하고,
     if comment_form.is_valid:
-        comment = comment_form.save(commit=False)
-        comment.article = article
-        comment.save()
+        comment = comment_form.save(commit=False)   # 저장 잠깐만!! (DB에 쿼리 날리지 말고) comment 인스턴스 줘!
+        comment.article = article # 내가 직접 조작한후
+        comment.save() # DB에 쿼리날린다!
 
     else:
         messages.success(request, '댓글이 형식에 맞지 않습니다.')
