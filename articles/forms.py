@@ -19,9 +19,9 @@ class ArticleForm(forms.ModelForm):
             }
         )
     )
-    image = forms.ImageField(
-        label='이미지'
-    )
+    # image = forms.ImageField(
+    #     label='이미지'
+    # )
 
     class Meta:
         model = Article # Article 쓰려면 import해야해!!!
