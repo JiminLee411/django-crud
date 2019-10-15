@@ -3,6 +3,7 @@ from IPython import embed
 from .models import Article, Comment
 from .forms import ArticleForm, CommentForm
 from django.views.decorators.http import require_POST # POST여야만 동작할 수 있다
+from django.contrib.auth.decorators import login_required # login해야만 동작할 수 있게 하는 데코레이터
 from django.contrib import messages
 
 
@@ -22,14 +23,11 @@ def index(request):
     # embed() # 이 함수 만나면 멈춰서 어떤 데이터를 가지고 있는지 터미널을 통해 확인 가능하다.
     return render(request, 'articles/index.html', context)
 
-# def new(request):
-#     return render(request, 'articles/new.html')
-
+@login_required
 def create(request):
     if request.method == 'POST':
         # POST 요청 -> 검증 및 저장
         article_form = ArticleForm(request.POST, request.FILES)
-        # embed()
         # 검증
         if article_form.is_valid():
             # 검증에 성공하면 저장
