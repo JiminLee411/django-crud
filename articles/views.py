@@ -105,7 +105,7 @@ def comment_create(request, article_pk):
     # 1. modelform에 사용자 입력값 넣고
     comment_form = CommentForm(request.POST) # 사용자가 form + modelform
     # 2. 검증하고,
-    if comment_form.is_valid:
+    if comment_form.is_valid():
         comment = comment_form.save(commit=False)   # 저장 잠깐만!! (DB에 쿼리 날리지 말고) comment 인스턴스 줘!
         comment.article = article # 내가 직접 조작한후
         comment.save() # DB에 쿼리날린다!

@@ -137,4 +137,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_URL : 업로드된 image의 url 주소!
 MEDIA_URL = '/media/'
 
+# AUTH
+LOGIN_URL = '/accounts/login/' # default! @login_required에서 사용.
+
 # MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
