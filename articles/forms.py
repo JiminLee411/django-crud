@@ -1,5 +1,6 @@
 from django import forms
 from .models import Article, Comment
+
 class ArticleForm(forms.ModelForm):
     title = forms.CharField(
         max_length=140,
@@ -27,7 +28,7 @@ class ArticleForm(forms.ModelForm):
         model = Article # Article 쓰려면 import해야해!!!
         fields = '__all__'
         # fields = ('title', )
-        # exclude = ('title', )
+        exclude = ('user', )
         # widgets = {
         #     'title': 
         # }
@@ -47,7 +48,7 @@ class CommentForm(forms.ModelForm):
     )
     class Meta:
         model = Comment
-        exclude = ('article', )
+        exclude = ('article', 'user')
 
 # # class ArticleForm(forms.Form):
 #     title = forms.CharField(

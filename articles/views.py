@@ -37,7 +37,9 @@ def create(request):
             # article.save()
 
             # meta 클래스 적용후, 이것만 있으면 OK!
-            article = article_form.save()
+            article = article_form.save(commit=False)
+            article.user = request.user
+            article.save()
             return redirect('articles:detail', article.pk)
         # else:
             # 다시 폼으로 돌아가 -> 중복돼서 제거! (아래에 context를 내보내고 else하나로 설정)
@@ -57,6 +59,7 @@ def detail(request, article_pk):
     context = {
         'article': article,
         'comments': comments,
+        'request_user': request.user
     }
     return render(request, 'articles/detail.html', context)
 
@@ -71,8 +74,12 @@ def detail(request, article_pk):
 @require_POST
 def delete(request, article_pk):
     article = Article.objects.get(pk=article_pk)
-    article.delete()
-    return redirect('articles:index')
+    if article.user == request.user:
+        article.delete()
+        return redirect('articles:index')
+    else:
+        messages.add_message(request, messages.INFO, '삭제 권한이 없습니다.')
+        return render('articles/index.html')
 
 def edit(request, article_pk):
     article = Article.objects.get(pk=article_pk)
@@ -108,6 +115,7 @@ def comment_create(request, article_pk):
     if comment_form.is_valid():
         comment = comment_form.save(commit=False)   # 저장 잠깐만!! (DB에 쿼리 날리지 말고) comment 인스턴스 줘!
         comment.article = article # 내가 직접 조작한후
+        comment.user = request.user
         comment.save() # DB에 쿼리날린다!
 
     else:

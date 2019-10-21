@@ -3,11 +3,14 @@
 {% block body %}
   <div><h6 class="text-right text-secondary">{{ article.id }}번째 글 </h6></div>
   <h4 style="display:inline-block;"> {{ article.title }}</h4>
+  <h6 class="text-right">작성자 : {{ article.user }}</h6>
   <hr>
+  {% if article.user == request_user %}
   <p  class="text-right">
     <a href="{% url 'articles:update' article.pk %}" class="text-right ml-auto">[수정하기]</a>
     {% comment %} <a href="{% url 'articles:delete' article.pk %}" class="text-right ml-auto">[글 삭제하기]</a> {% endcomment %}
   </p>
+  {% endif %}
   <div><p>{{ article.content }}</p></div>
   {% if article.image %}
     <div><img src="{{ article.image.url }}" alt=""></div>
@@ -18,13 +21,16 @@
   <h6 class="text-right text-secondary">수정일자 : {{ article.updated_at }}</h6>
   
   <hr>
+  {% if article.user == request_user %}
   <form action="{% url 'articles:delete' article.pk %}" method="POST" onclick="return confirm('REALLY DELETE?')">
     {% csrf_token %}
     <input type="submit" value="삭제하기">
   </form>
+  {% endif %}
   <form action="{% url 'articles:index' %}">
     <input type="submit" value="목록으로">
   </form>
+
   <hr>
   <hr>
   {% comment %} <h5>댓글 작성</h3> {% endcomment %}
@@ -38,11 +44,13 @@
   <ol>
     {% for comment in comments %}
       <li>{{comment.content}}</li>
-      <p> : {{comment.created_at}}</p>
-      <form action="{% url 'articles:comment_delete' article.pk comment.pk %}" method="POST" onclick="return confirm('REALLY DELETE?')">
-    {% csrf_token %}
-    <input type="submit" value="삭제하기">
-  </form>
+      <p>{{ comment.user }} : {{comment.created_at}}</p>
+      {% if comment.user == request_user %}
+        <form action="{% url 'articles:comment_delete' article.pk comment.pk %}" method="POST" onclick="return confirm('REALLY DELETE?')">
+          {% csrf_token %}
+          <input type="submit" value="삭제하기">
+        </form>
+      {% endif %}
       <hr>
     {% empty %}
       <p>댓글이 없습니다.</p>

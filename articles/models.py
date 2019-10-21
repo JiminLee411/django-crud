@@ -1,6 +1,7 @@
 from django.db import models
 from imagekit.models import ProcessedImageField, ImageSpecField
 from imagekit.processors import ResizeToFill, ResizeToFit
+from django.conf import settings
 
 # Create your models here.
 # 1. 모델(스키마) 정의
@@ -33,6 +34,11 @@ class Article(models.Model):
     #   auto_now : 수정시마다 자동으로 저장
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)    # 참조 : https://docs.djangoproject.com/en/2.2/topics/auth/customizing/
+    # 1. 확장가능성을 위해서 사용한 클래스는 빼놓고 써라!!!!! pass로 넘길지라도!!
+    # 2. settings.py에 설정해놓고 써라!!!
+    # 3. settings.AUTH_USER_MODEL : 'accounts.User' (str)
 
     def __str__(self):
         return f'{self.id} : {self.title}'
@@ -41,6 +47,7 @@ class Comment(models.Model):
     content = models.CharField(max_length=140)
     created_at = models.DateTimeField(auto_now_add=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     # on_delete
     # 1. CASCADE : 글이 삭제되었을 때 모든 댓글을 삭제
     # 2. PROTECT : 댓글이 존재하면 글 삭제 안됨.
