@@ -5,7 +5,7 @@
   <h4 style="display:inline-block;"> {{ article.title }}</h4>
   <h6 class="text-right">작성자 : {{ article.user }}</h6>
   <hr>
-  {% if article.user == request_user %}
+  {% if article.user == user %}
   <p  class="text-right">
     <a href="{% url 'articles:update' article.pk %}" class="text-right ml-auto">[수정하기]</a>
     {% comment %} <a href="{% url 'articles:delete' article.pk %}" class="text-right ml-auto">[글 삭제하기]</a> {% endcomment %}
@@ -33,19 +33,17 @@
 
   <hr>
   <hr>
-  {% comment %} <h5>댓글 작성</h3> {% endcomment %}
-  <form action="{% url 'articles:comment_create' article.pk %}" method="POST">
-    {% csrf_token %}
-    <label for="content">댓글 작성</label>
-    <input type="text" id="content" name="content">
-    <input type="submit" value="작성하기">
-  </form>
+    <form action="{% url 'articles:comment_create' article.pk %}" method="POST">
+      {% csrf_token %}
+      {{ comment_form }}
+      <input type="submit" value="작성하기">
+    </form>
   <hr>
   <ol>
     {% for comment in comments %}
       <li>{{comment.content}}</li>
       <p>{{ comment.user }} : {{comment.created_at}}</p>
-      {% if comment.user == request_user %}
+      {% if comment.user == user %}
         <form action="{% url 'articles:comment_delete' article.pk comment.pk %}" method="POST" onclick="return confirm('REALLY DELETE?')">
           {% csrf_token %}
           <input type="submit" value="삭제하기">

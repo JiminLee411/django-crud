@@ -40,7 +40,7 @@ class CommentForm(forms.ModelForm):
     content = forms.CharField(
         max_length=140,
         label='댓글',
-        widget=forms.Textarea(
+        widget=forms.TextInput(
             attrs={
                 'placeholder': '댓글을 입력하세요.'
             }
