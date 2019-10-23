@@ -26,9 +26,9 @@ class ArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article # Article 쓰려면 import해야해!!!
-        fields = '__all__'
+        fields = ('title', 'content', 'image', )
         # fields = ('title', )
-        exclude = ('user', )
+        # exclude = ('user', )
         # widgets = {
         #     'title': 
         # }

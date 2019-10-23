@@ -1,11 +1,12 @@
 from IPython import embed
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm, PasswordChangeForm # UserCreationForm : 회원가입 폼,  AuthenticationForm : 인증과 관련된 form
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import update_session_auth_hash
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model # User 클래스 사용하려면 이거 불러와야해!!
 
 # Create your views here.
 def signup(request):
@@ -72,3 +73,11 @@ def password_change(request):
         'form': form
     }
     return render(request, 'accounts/form.html', context)
+
+def profile(request, account_pk):
+    User = get_user_model()
+    user_profile = get_object_or_404(User, pk=account_pk)
+    context = {
+        'user_profile': user_profile
+    }
+    return render(request, 'accounts/profile.html', context)

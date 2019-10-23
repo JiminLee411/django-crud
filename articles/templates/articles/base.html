@@ -9,58 +9,15 @@
   <!--
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   -->
+  {% comment %} <link rel="stylesheet" href="animate.min.css"> {% endcomment %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
   <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png'%}">
   <link rel="icon" href="{% static 'favicon/favicon.ico'%}" type="image/x-icon">
   {% block css %}{% endblock %}
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="{% url 'articles:index' %}">게시판</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="{% url 'articles:index' %}">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <!-- 로그인이 되어 있다면, -->
-        {% if user.is_authenticated %} <!-- 로그인이 되어 있는지 확인하는 method -->
-        <li class="nav-item">
-          {% load gravatar %}
-          <img src="{{ user.email|makehash }}" alt="">
-          <a class="nav-link"> {{user.username}}</a> <!-- login과 관련된 모든 정보는 request에 저장되어 있기 때문에 context로 안넘겨줘도 사용 가능! -->
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            마이페이지
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="nav-link" href="{% url 'accounts:update' %}"> 회원정보 수정</a>
-            <a class="nav-link" href="{% url 'accounts:password_change' %}"> 비밀번호 변경</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'accounts:logout' %}"> 로그아웃</a>
-        </li>
-        <!-- 로그인이 되어 있지 않다면, -->
-        {% else %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'accounts:signup' %}"> 회원가입</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'accounts:login' %}"> 로그인</a>
-        </li>
-        {% endif %}
-      </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
-    </div>
-  </nav>
+  {% include '_navbar.html' %}
   <div class="container">
   {% if messages %}
   {% for message in messages %}
@@ -72,6 +29,7 @@
     {% block body %}
     {% endblock %}
   </div>
+  <script src="https://kit.fontawesome.com/54e342cbc4.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="{% static 'bootstrap/js/bootstrap.min.js'%}" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

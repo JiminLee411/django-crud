@@ -39,6 +39,8 @@ class Article(models.Model):
     # 1. 확장가능성을 위해서 사용한 클래스는 빼놓고 써라!!!!! pass로 넘길지라도!!
     # 2. settings.py에 설정해놓고 써라!!!
     # 3. settings.AUTH_USER_MODEL : 'accounts.User' (str)
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_articles', blank=True)
+    unlike_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='unlike_articles', blank=True)
 
     def __str__(self):
         return f'{self.id} : {self.title}'

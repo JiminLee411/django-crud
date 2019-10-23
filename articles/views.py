@@ -3,7 +3,7 @@ from django.views.decorators.http import require_POST # POST여야만 동작할 
 from django.contrib.auth.decorators import login_required # login해야만 동작할 수 있게 하는 데코레이터
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden #, HttpREsponse
 from .models import Article, Comment
 from .forms import ArticleForm, CommentForm
 
@@ -59,12 +59,10 @@ def detail(request, article_pk):
     article = Article.objects.get(pk=article_pk)
     comments = article.comment_set.all()
     comment_form = CommentForm()
-    re = request.user
-    print(re)
     context = {
         'article': article,
         'comments': comments,
-        'comment_form': comment_form
+        'comment_form': comment_form,
     }
     return render(request, 'articles/detail.html', context)
 
@@ -115,7 +113,6 @@ def update(request, article_pk):
         return HttpResponseForbidden
 
 @require_POST
-# @login_required
 def comment_create(request, article_pk):
     if request.user.is_authenticated:
         article = get_object_or_404(Article, pk=article_pk)
@@ -135,6 +132,7 @@ def comment_create(request, article_pk):
     else:
         messages.success(request, '댓글 작성 권한이 없습니다. 로그인해주세요')
         return redirect('articles:detail', article_pk)
+        # return HttpResponse('Unauthorized', status=401)
 
 @require_POST
 def comment_delete(request, article_pk, comment_pk):
@@ -147,3 +145,16 @@ def comment_delete(request, article_pk, comment_pk):
     else:
         # raise PermissionDenied
         return HttpResponseForbidden # 위에거랑 이러랑 둘다 가능!
+# request.user를 이용할때는 로그인이 안돼있을때는 User객체에 없기 때문에 오류 발생!!!!!! @login_required로 예외처리해야해!!!!!!!!!!        
+@login_required
+def like(request, article_pk):
+    article = get_object_or_404(Article, pk=article_pk)
+    # 좋아요를 누른적이 있다면?
+    if article in request.user.like_articles.all():
+        # 좋아요 취소 로직
+        request.user.like_articles.remove(article)
+    # 아니면
+    else:
+        # 좋아요 로직
+        request.user.like_articles.add(article)
+    return redirect('articles:detail', article_pk)

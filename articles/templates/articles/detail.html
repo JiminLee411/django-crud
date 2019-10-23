@@ -6,10 +6,16 @@
   <h6 class="text-right">작성자 : {{ article.user }}</h6>
   <hr>
   {% if article.user == user %}
-  <p  class="text-right">
-    <a href="{% url 'articles:update' article.pk %}" class="text-right ml-auto">[수정하기]</a>
-    {% comment %} <a href="{% url 'articles:delete' article.pk %}" class="text-right ml-auto">[글 삭제하기]</a> {% endcomment %}
-  </p>
+    <p  class="text-right">
+      <a href="{% url 'articles:update' article.pk %}" class="text-right ml-auto">[수정하기]</a>
+      {% comment %} <a href="{% url 'articles:delete' article.pk %}" class="text-right ml-auto">[삭제하기]</a> {% endcomment %}
+      {% if article.user == user %}
+        <form action="{% url 'articles:delete' article.pk %}" class="text-right ml-auto" method="POST" onclick="return confirm('REALLY DELETE?')">
+          {% csrf_token %}
+          <input type="submit" value="삭제하기" class="text-right ml-auto">
+        </form>
+      {% endif %}
+    </p>
   {% endif %}
   <div><p>{{ article.content }}</p></div>
   {% if article.image %}
@@ -21,23 +27,28 @@
   <h6 class="text-right text-secondary">수정일자 : {{ article.updated_at }}</h6>
   
   <hr>
-  {% if article.user == request_user %}
-  <form action="{% url 'articles:delete' article.pk %}" method="POST" onclick="return confirm('REALLY DELETE?')">
-    {% csrf_token %}
-    <input type="submit" value="삭제하기">
-  </form>
-  {% endif %}
+  <a href="{% url 'articles:like' article.pk %}" class='d-inline-block'>
+  <button class="btn btn-danger">
+    {% if user in article.like_users.all %}
+      <i class="fas fa-heart animated infinite bounce delay-1s" style="color: blue;"></i>
+    {% else %}
+      <i class="far fa-heart animated"></i>
+    {% endif %}
+    </button>
+  </a>
+  <p class='d-inline-block'>   {{article.like_users.count}}명이 이 글을 좋아합니다.</p>
+  <hr>
   <form action="{% url 'articles:index' %}">
     <input type="submit" value="목록으로">
   </form>
-
-  <hr>
   <hr>
     <form action="{% url 'articles:comment_create' article.pk %}" method="POST">
       {% csrf_token %}
       {{ comment_form }}
       <input type="submit" value="작성하기">
     </form>
+  <hr>
+  <p>댓글수 : {{ comments.count }}</p>
   <hr>
   <ol>
     {% for comment in comments %}
