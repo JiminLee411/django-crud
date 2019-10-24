@@ -17,7 +17,9 @@
       {% endif %}
     </p>
   {% endif %}
-  <div><p>{{ article.content }}</p></div>
+  <div><p>{{ article.content|linebreaksbr }}</p></div>
+  {% load hashtag %}
+  <p>{{article|make_link|safe}}</p>
   {% if article.image %}
     <div><img src="{{ article.image.url }}" alt=""></div>
   {% endif %}

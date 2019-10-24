@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required # login해야만 동�
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseForbidden #, HttpREsponse
-from .models import Article, Comment
+from .models import Article, Comment, HashTag
 from .forms import ArticleForm, CommentForm
 
 from IPython import embed
@@ -42,6 +42,11 @@ def create(request):
             article = article_form.save(commit=False)
             article.user = request.user
             article.save()
+            # 해시태크 저장 및 연결 작업 (article의 pk가 있어야 해시태그와 연결작업을 할 수 있다! save후에!!)
+            for word in article.content.split():
+                if word.startswith('#'):
+                    hashtag, created = HashTag.objects.get_or_create(content=word[1:]) # return값이 튜플
+                    article.hashtags.add(hashtag)
             return redirect('articles:detail', article.pk)
         # else:
             # 다시 폼으로 돌아가 -> 중복돼서 제거! (아래에 context를 내보내고 else하나로 설정)
@@ -101,6 +106,12 @@ def update(request, article_pk):
                 # article.title = article_form.cleaned_data.get('title')
                 # article.content = article_form.cleaned_data.get('content')
                 # article.save()
+                # 해시태그 수정
+                article.hashtags.clear()
+                for word in article.content.split():
+                    if word.startswith('#'):
+                        hashtag, created = HashTag.objects.get_or_create(content=word[1:]) # return값이 튜플
+                        article.hashtags.add(hashtag)
                 return redirect('articles:detail', article.pk)
         else:
             article_form = ArticleForm(instance=article)
@@ -158,3 +169,10 @@ def like(request, article_pk):
         # 좋아요 로직
         request.user.like_articles.add(article)
     return redirect('articles:detail', article_pk)
+
+def hashtag(request, tag_pk):
+    hashtag = get_object_or_404(HashTag, pk=tag_pk)
+    context = {
+        'hashtag': hashtag
+    }
+    return render(request, 'articles/hashtag.html', context)
