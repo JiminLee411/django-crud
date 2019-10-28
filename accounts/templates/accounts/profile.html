@@ -1,6 +1,8 @@
 {% extends 'articles/base.html' %}
+{% load bootstrap4 %}
+{% load gravatar %}
 {% block body %}
-    <h4 class="d-inlin-block">{{user_profile.username}}의 프로필입니다.</h4>
+    <h4 class="d-inlin-block"><img src="{{ user.email|makehash }}" alt="">{{user_profile.username}}의 프로필입니다.</h4>
     <hr>
     <p>팔로우 : {{user_profile.followings.all.count}} 팔로워 : {{user_profile.followers.all.count}}</p>
     {% with user_profile.followers.all as followers %}
