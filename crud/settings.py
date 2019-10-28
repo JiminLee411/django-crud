@@ -31,6 +31,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # allauth 사용을 위해 추가
+    'allauth',
+    'django.contrib.sites',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao', # 원하는 소셜 사이트
+
     'accounts',
     'bootstrap4',
     'pages',
@@ -142,3 +149,11 @@ LOGIN_URL = '/accounts/login/' # default! @login_required에서 사용.
 AUTH_USER_MODEL = 'accounts.User' # default : auth.User
 
 # MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SITE_ID = 1 # 'django.contrib.sites' -> 이 앱을 추가하면 무조건 SITE_ID 부여해줘야함
+LOGIN_REDIRECT_URL = '/articles/'

@@ -13,7 +13,7 @@
         {% if user.is_authenticated %} <!-- 로그인이 되어 있는지 확인하는 method -->
         <li class="nav-item">
           {% load gravatar %}
-          
+          <img src="{{ user|makehash }} " alt="" style="width: 50px; height: 50px;">
           <a class="nav-link" href="{% url 'accounts:profile' user.pk%}"> {{user.username}}</a> <!-- login과 관련된 모든 정보는 request에 저장되어 있기 때문에 context로 안넘겨줘도 사용 가능! -->
         </li>
         <li class="nav-item dropdown">
