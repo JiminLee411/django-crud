@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseForbidden #, HttpREsponse
 from .models import Article, Comment, HashTag
 from .forms import ArticleForm, CommentForm
+from django.http import JsonResponse
 
 from IPython import embed
 
@@ -160,15 +161,19 @@ def comment_delete(request, article_pk, comment_pk):
 @login_required
 def like(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
+    
     # 좋아요를 누른적이 있다면?
+    is_liked = True
     if article in request.user.like_articles.all():
         # 좋아요 취소 로직
         request.user.like_articles.remove(article)
+        is_liked = False
     # 아니면
     else:
         # 좋아요 로직
         request.user.like_articles.add(article)
-    return redirect('articles:detail', article_pk)
+        is_liked = True
+    return JsonResponse({'is_liked': is_liked, 'likers': article.like_users.count()})
 
 def hashtag(request, tag_pk):
     hashtag = get_object_or_404(HashTag, pk=tag_pk)
@@ -176,3 +181,11 @@ def hashtag(request, tag_pk):
         'hashtag': hashtag
     }
     return render(request, 'articles/hashtag.html', context)
+
+def explore(request):
+    followings = request.user.followings.all()
+    articles = Article.objects.filter(user__in=followings).order_by('created_at')
+    context = {
+        'articles': articles
+    }
+    return render(request, 'articles/index.html', context)

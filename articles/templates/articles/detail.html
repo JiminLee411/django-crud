@@ -29,16 +29,16 @@
   <h6 class="text-right text-secondary">수정일자 : {{ article.updated_at }}</h6>
   
   <hr>
-  <a href="{% url 'articles:like' article.pk %}" class='d-inline-block'>
-  <button class="btn btn-danger">
+  <!-- <a href="{% url 'articles:like' article.pk %}" class='d-inline-block'> -->
+  <button class="btn btn-danger" id="like-btn" data-id="{{article.id}}">
     {% if user in article.like_users.all %}
       <i class="fas fa-heart animated infinite bounce delay-1s" style="color: blue;"></i>
     {% else %}
       <i class="far fa-heart animated"></i>
     {% endif %}
     </button>
-  </a>
-  <p class='d-inline-block'>   {{article.like_users.count}}명이 이 글을 좋아합니다.</p>
+  <!-- </a> -->
+  <p class='d-inline-block'><span id="like-count">   {{article.like_users.count}}</span>명이 이 글을 좋아합니다.</p>
   <hr>
   <form action="{% url 'articles:index' %}">
     <input type="submit" value="목록으로">
@@ -63,10 +63,32 @@
         </form>
       {% endif %}
       <hr>
-    {% empty %}
+      {% empty %}
       <p>댓글이 없습니다.</p>
     {% endfor %}
   </ol>
   {% comment %} <a href="{% url 'articles:index' %}">목록으로</a> {% endcomment %}
   {% comment %} <a href="/articles/">목록으로</a><br> {% endcomment %}
+{% endblock %}
+{% block script %}
+  <script>
+    const likeButton = document.querySelector('#like-btn')
+    likeButton.addEventListener('click', function (event) {
+      console.log(this)
+      axios.get(`/articles/${this.dataset.id}/like/`)
+        .then(response => {
+          console.log(response)
+          console.log(event.target)
+          const likers = document.querySelector('#like-count')
+          if (response.data.is_liked) {
+            this.children[0].classList.remove('far')
+            this.children[0].classList.add('fas')
+          } else {
+            this.children[0].classList.remove('fas')
+            this.children[0].classList.add('far')
+          }
+          likers.innerText = response.data.likers
+        })
+    })
+  </script>
 {% endblock %}
